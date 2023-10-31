@@ -1,0 +1,15 @@
+nav {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-content: center;
+}
+
+img {
+	height: 50px;
+}
+
+nav>a,
+img {
+	margin-right: 5vw;
+}
