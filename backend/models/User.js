@@ -3,12 +3,12 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose; 
 
 const userSchema = new mongoose.Schema({
-    name: {type: String, required: true},
+    username: {type: String, required: true, unique: true},
     hashedPassword: {type: String, required: true}
 },
 {
     timestamps: true
 })
-//  Bootcamp points to "bootcamps" collection
+//  points to users collection
 const User = mongoose.model('User', userSchema)
 module.exports = User;

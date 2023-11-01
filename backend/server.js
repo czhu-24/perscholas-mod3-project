@@ -47,7 +47,6 @@ app.post('/posts/create', async (req, res) => {
 app.get('/posts/read', async (req, res) => {
   try{
     const dbResponse = await Post.find();
-
     const changedDbResponse = dbResponse.map((post) => ({
       _id: post._id,
       // author is not required
@@ -64,13 +63,12 @@ app.get('/posts/read', async (req, res) => {
   }
 })
 
-
 //                UPDATE
 app.put('/posts/edit/:postId', async (req, res) => {
   try{
     const postId = req.params.postId;
     const newPost = req.body;
-    console.log(postId, newPost);
+    //console.log(postId, newPost);
     const dbResponse = await Post.findByIdAndUpdate(postId, newPost, {new: true});
     res.status(200).send(dbResponse);
   }catch(err){

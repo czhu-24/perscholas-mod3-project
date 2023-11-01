@@ -7,6 +7,7 @@ import Home from '../pages/Home'
 import Login from '../pages/Login'
 import './App.css'
 import Footer from '../components/Footer'
+import Signup from '../pages/Signup'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/posts" element={<Posts />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
       </Routes>
       <Footer />
