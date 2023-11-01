@@ -8,34 +8,24 @@ const PostsDisplay = () => {
 	const { posts, setPosts } = useContext(primaryContext);
 
 	// functions to handle edit and delete
+	const handleDelete = () => {
 
-	useEffect(() => {
-		// fill the posts within Context
-		try {
-			axios({
-				method: "GET",
-				url: "/server/posts/read"
-			}).then((response) => {
-				//console.log(response.data);
-				setPosts(response.data);
-			})
-		} catch (err) {
-			console.error(err);
-		}
-	}, []);
+	}
+
+
 
 	return (
 		<div className="page">
 			<h1>Posts</h1>
-			<ul>
+			<ul className="list-grid-parent">
 				{posts.map((post) =>
-					<div key={JSON.stringify(post)}>
+					<div key={JSON.stringify(post)} className="list-grid">
 						<img src="../src/assets/profile.png" alt="profile" />
 						<div key={post._id} className="post">
 							<Post post={post} />
 						</div>
-						<button>Edit</button>
-						<button>Delete</button>
+						<button className="edit-btn">Edit</button>
+						<button onClick={() => handleDelete(post._id)} className="delete-btn">Delete</button>
 					</div>
 				)}
 			</ul>

@@ -13,6 +13,35 @@ p {
   font-size: 16px;
 }
 
+
+.page h1 {
+  text-align: center;
+}
+
+.page>form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container for the list */
+.page {
+  /* flexbox */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-family: 'Georgia', serif;
+  /* Use a warm, serif font */
+  background-color: #f5f5f5;
+  /* Soft, neutral background color */
+  padding: 20px;
+  border-radius: 10px;
+  /* Rounded corners for a cozy feel */
+}
+
 /* Additional styles for a cozy feel */
 .container {
   background-color: #f9f9f9;
@@ -32,22 +61,4 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.page h1 {
-  text-align: center;
-}
-
-.page>form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }

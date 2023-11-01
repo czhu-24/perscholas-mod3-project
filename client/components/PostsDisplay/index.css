@@ -1,45 +1,32 @@
-/* Container for the list */
-.page {
-	font-family: 'Georgia', serif;
-	/* Use a warm, serif font */
-	background-color: #f5f5f5;
-	/* Soft, neutral background color */
-	padding: 20px;
-	border-radius: 10px;
-	/* Rounded corners for a cozy feel */
-}
-
-/* List styling */
-.post {
-	list-style: none;
-	/* Remove default list bullets */
+.list-grid-parent {
 	padding: 0;
-
-	margin: 10px 0;
-	/* Spacing between list items */
-	padding: 10px;
-	/* Padding for a comfortable feel */
-	background-color: #ffeecc;
-	/* Soft, warm background color */
-	border: 1px solid #ffcc99;
-	/* Subtle border */
-	border-radius: 5px;
-	/* Rounded corners for each item */
-	box-shadow: 3px 3px 5px #ccc;
-	/* A subtle box shadow for depth */
-
-	/* Text styling */
-	font-size: 18px;
-	/* Larger text for readability */
-	color: #333;
-	/* Dark text color */
-	text-align: center;
-	/* Center align text */
-
-	width: 50vw;
 }
 
-/* Hover effect */
-.post:hover {
-	background-color: #ffcc99;
+.list-grid-parent>.list-grid {
+	display: grid;
+	grid-template-columns: 200px 1fr 1fr 1fr 200px;
+	grid-template-rows: 1fr 1fr;
+	grid-gap: 10px;
+	padding: 10px;
+}
+
+/* all children below of .list-grid which is a css grid */
+.list-grid img {
+	justify-self: center;
+	align-self: center;
+}
+
+.post {
+	grid-column: span 3;
+	grid-row: span 2;
+}
+
+.list-grid .delete-btn {
+	grid-column: 5;
+	grid-row: 2;
+}
+
+.list-grid button {
+	width: 50%;
+	justify-self: center;
 }
