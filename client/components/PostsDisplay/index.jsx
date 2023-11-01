@@ -2,9 +2,12 @@ import React, { useContext, useEffect } from 'react'
 import { primaryContext } from '../../context/primaryContext'
 import axios from 'axios'
 import './index.css'
+import Post from '../Post'
 
 const PostsDisplay = () => {
 	const { posts, setPosts } = useContext(primaryContext);
+
+	// functions to handle edit and delete
 
 	useEffect(() => {
 		// fill the posts within Context
@@ -19,18 +22,20 @@ const PostsDisplay = () => {
 		} catch (err) {
 			console.error(err);
 		}
-	}, [])
+	}, []);
 
 	return (
 		<div className="page">
 			<h1>Posts</h1>
-			<ul className="list-container">
+			<ul>
 				{posts.map((post) =>
-					<div key={post._id} className="post">
-						<li>{post.content}</li>
-						<li>Author: {post.author}</li>
-						<li>Created: {post.formattedCreatedAt}</li>
-						<li>Is This Public? {post.isPublic ? "Yes" : "No"}</li>
+					<div key={JSON.stringify(post)}>
+						<img src="../src/assets/profile.png" alt="profile" />
+						<div key={post._id} className="post">
+							<Post post={post} />
+						</div>
+						<button>Edit</button>
+						<button>Delete</button>
 					</div>
 				)}
 			</ul>
