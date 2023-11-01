@@ -1,3 +1,7 @@
+.page.post-display {
+	display: block;
+}
+
 .list-grid-parent {
 	padding: 0;
 }
@@ -29,4 +33,58 @@
 .list-grid button {
 	width: 50%;
 	justify-self: center;
+}
+
+/*		responsive styling for mobile screens 		*/
+@media screen and (max-width: 768px) {
+	.list-grid {
+		grid-template-rows: repeat(6, 1fr) !important;
+		grid-template-columns: repeat(3, 1fr) !important;
+	}
+
+	.list-grid img {
+		grid-row: span 1 / 1;
+		grid-column: span 1 / 1;
+		max-width: 100px;
+		/* Shrink the image width to fit the container */
+		height: auto;
+		/* Maintain the image's aspect ratio */
+	}
+
+	.list-grid .post {
+		/* span 3 rows and start on 2nd row */
+		grid-row: span 3 / 2;
+		grid-column: span 3 / 1;
+	}
+
+	.list-grid button {
+		width: 100%;
+	}
+
+	.list-grid .delete-btn {
+		grid-row: span 1 / 5;
+		grid-column: span 3;
+	}
+
+	.list-grid .edit-btn {
+		grid-row: span 1 / 6;
+		grid-column: span 3;
+	}
+}
+
+/* for react modals */
+.ReactModalPortal {
+	margin: 0 auto;
+}
+
+.ReactModal__Content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.ReactModalPortal button {
+	margin: 10px;
 }
