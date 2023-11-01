@@ -4,15 +4,28 @@ import axios from 'axios'
 import './index.css'
 import Post from '../Post'
 import ReactModal from 'react-modal';
+import validator from 'validator'
 
 const PostsDisplay = () => {
-	const { posts, setPosts } = useContext(primaryContext);
+	const { posts, setPosts, editPost, setEditPost } = useContext(primaryContext);
 
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 	const [deleteId, setDeleteId] = useState(null);
 
 	const [isEditModalOpen, setEditModalOpen] = useState(false);
-	const [editId, setEditId] = useState(null);
+	const [formData, setFormData] = useState({
+		content: editPost.content,
+		isPublic: editPost.isPublic
+	});
+
+	// change edit form everytime the edit button is clicked on
+	useEffect(() => {
+		setFormData({
+			content: editPost.content,
+			isPublic: editPost.isPublic
+		})
+	}, [editPost]) // not 100% sure why it needs to be dependent on editPost and i can't use the empty dependency array
+
 
 	// for accessibility reasons for ReactModal
 	ReactModal.setAppElement('#root');
@@ -35,8 +48,33 @@ const PostsDisplay = () => {
 
 	}
 
-	const handleEdit = async (editId) => {
+	const handleEdit = async (e) => {
+		setEditModalOpen(false);
+		e.preventDefault();
+
+		if (!formData.content) {
+			return;
+		}
+
+		//console.log(formData);
+
+		// sanitize form data
+		const sanitizedInput = validator.escape(editPost.content);
+		setFormData({ ...editPost, content: sanitizedInput });
+
 		try {
+			const response = await axios({
+				method: "PUT",
+				url: `/server/posts/edit/${editPost._id}`,
+				// because editPost is not being updated as you type in the modal form
+				data: formData
+			})
+
+			// update front end 
+			const postsCopy = [...posts];
+			const indexToChange = postsCopy.findIndex((post) => post._id === editPost._id);
+			postsCopy[indexToChange] = { ...postsCopy[indexToChange], ...formData };
+			setPosts(postsCopy);
 
 		} catch (err) {
 			console.error(err);
@@ -63,12 +101,28 @@ const PostsDisplay = () => {
 			{/* Modal to edit post */}
 			<ReactModal
 				isOpen={isEditModalOpen}
-				onRequestClose={() => { setEdit(null); setEditModalOpen(false); }} // Close modal if you click outside
+				onRequestClose={() => { setEditModalOpen(false); }}
 				contentLabel="Edit Post">
 				<h2>Edit Post Below</h2>
-				<div>
-					<button onClick={() => { handleEdit(editId); setEditModalOpen(false); }}>Save Edit</button>
+				<form onSubmit={handleEdit}>
+					<div>
+						<label htmlFor="content">Content:</label>
+						<textarea onChange={(e) => setFormData((prevState) => {
+							return { ...prevState, content: e.target.value }
+						})} name="content" id="content" value={formData.content} />
+					</div>
+
+					<div>
+						<label htmlFor="isPublic">Public Post:</label>
+						<input onChange={() => setFormData((prevState) => ({ ...prevState, isPublic: !formData.isPublic }))} type="checkbox" id="isPublic" name="isPublic" defaultChecked={formData.isPublic} />
+					</div>
+
+					<button>Save Edit</button>
 					<button onClick={() => setEditModalOpen(false)}>No, Go Back</button>
+				</form>
+				<div>
+
+
 				</div>
 			</ReactModal>
 
@@ -80,7 +134,7 @@ const PostsDisplay = () => {
 							<Post post={post} />
 						</div>
 						<button onClick={() => {
-							setEditId(post._id);
+							setEditPost(post);
 							setEditModalOpen(true);
 						}} className="edit-btn">Edit</button>
 						<button onClick={() => {
