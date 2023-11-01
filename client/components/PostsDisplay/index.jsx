@@ -13,7 +13,7 @@ const PostsDisplay = () => {
 				method: "GET",
 				url: "/server/posts/read"
 			}).then((response) => {
-				// console.log(response.data);
+				//console.log(response.data);
 				setPosts(response.data);
 			})
 		} catch (err) {
@@ -28,7 +28,8 @@ const PostsDisplay = () => {
 				{posts.map((post) =>
 					<div key={post._id} className="post">
 						<li>{post.content}</li>
-						<li>Created: {post.createdAt}</li>
+						<li>Author: {post.author}</li>
+						<li>Created: {post.formattedCreatedAt}</li>
 						<li>Is This Public? {post.isPublic ? "Yes" : "No"}</li>
 					</div>
 				)}

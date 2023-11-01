@@ -47,7 +47,18 @@ app.post('/posts/create', async (req, res) => {
 app.get('/posts/read', async (req, res) => {
   try{
     const dbResponse = await Post.find();
-    res.status(200).send(dbResponse);
+
+    const changedDbResponse = dbResponse.map((post) => ({
+      _id: post._id,
+      // author is not required
+      author: post.author || "Anonymous",
+      content: post.content,
+      isPublic: post.isPublic,
+      // Access the virtual property
+      formattedCreatedAt: post.formattedCreatedAt,
+    }));
+
+    res.status(200).send(changedDbResponse);
   }catch(err){
     res.status(500).send("Error getting all posts", err);
   }

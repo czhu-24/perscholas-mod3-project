@@ -23,8 +23,8 @@ p {
 }
 
 /* Example for buttons */
-.button {
-  background-color: #ff7f50;
+button {
+  background-color: #000080;
   /* Warm and inviting button color */
   color: #fff;
   /* White text on the button */
@@ -32,6 +32,13 @@ p {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .page h1 {

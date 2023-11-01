@@ -18,7 +18,7 @@ const Posts = () => {
 			return;
 		}
 
-		console.log(formData);
+		//console.log(formData);
 
 		// sanitize form data
 		const sanitizedInput = validator.escape(formData.content);
@@ -32,8 +32,12 @@ const Posts = () => {
 				data: formData
 			});
 
-			console.log(response);
-			// change state var in context to change view on front end
+			//console.log(response);
+
+			setFormData({
+				content: "",
+				isPublic: true
+			})
 
 		} catch (err) {
 			console.error(err);
