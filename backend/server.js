@@ -64,13 +64,33 @@ app.get('/posts/read', async (req, res) => {
   }
 })
 
-  /* catch all route */
 
 //                UPDATE
+app.put('/posts/edit/:postId', async (req, res) => {
+  try{
+    const postId = req.params.postId;
+    const newPost = req.body;
+    console.log(postId, newPost);
+    const dbResponse = await Post.findByIdAndUpdate(postId, newPost, {new: true});
+    res.status(200).send(dbResponse);
+  }catch(err){
+    res.status(400).send("Error editing post", err);
+  }
+})
 
 //                DELETE
 
-// catch all route
+app.delete('/posts/delete/:postId', async (req, res) => {
+  try{
+    const postId = req.params.postId;
+    const dbResponse = await Post.findByIdAndDelete(postId);
+    res.status(200).send(dbResponse);
+  }catch(err){
+    res.status(500).send("Error deleting post", err);
+  }
+})
+
+/*            Catch all route             */
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
