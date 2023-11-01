@@ -1,15 +1,40 @@
+/* Navbar styling */
 nav {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
-	align-content: center;
+	align-items: center;
+	/* Use align-items instead of align-content */
+
+	background-color: #ffcc99;
+	/* Soft background color */
+	padding: 10px 20px;
+	/* Padding for a cozy feel */
+	box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+	/* Subtle shadow for depth */
+
+	/* Space out the items */
+	gap: 20px;
+
+	/* Make links cozy */
+	a {
+		text-decoration: none;
+		color: #666;
+		/* Dark gray text color */
+		font-weight: bold;
+		transition: color 0.3s;
+		/* Add smooth color transition */
+	}
+
+	a:hover {
+		color: #ff3366;
+		/* Warm, cozy color on hover */
+	}
 }
 
+/* Logo styling */
 img {
 	height: 50px;
-}
-
-nav>a,
-img {
-	margin-right: 5vw;
+	border-radius: 50%;
+	/* Make it round for a cozy feel */
 }

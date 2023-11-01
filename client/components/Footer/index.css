@@ -1,0 +1,27 @@
+/* Footer styling */
+footer {
+	background-color: #000000;
+	/* Soft, neutral background color */
+	padding: 20px;
+	text-align: center;
+	/* Center-align text */
+	font-family: 'Georgia', serif;
+	/* Use a warm, serif font */
+	border-top: 1px solid #ccc;
+	/* Subtle border at the top */
+
+	/* Text styling */
+	font-size: 16px;
+	color: #ffffff;
+	/* Dark gray text color */
+
+	position: fixed;
+	bottom: 0;
+	width: 100vw;
+}
+
+/* Make the text cozy by applying styles */
+footer em {
+	color: #ff3366;
+	/* A warm, cozy color for emphasized text */
+}

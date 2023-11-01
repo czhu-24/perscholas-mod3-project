@@ -6,6 +6,7 @@ import Posts from '../pages/Posts'
 import Profile from '../pages/Profile'
 import Login from '../pages/Login'
 import './App.css'
+import Footer from '../components/Footer'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+      <Footer />
     </>
   )
 }

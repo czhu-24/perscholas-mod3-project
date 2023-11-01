@@ -5,6 +5,7 @@ const helmet = require('helmet'); // adds a bunch of standard security to server
 require('./config/db.js');
 const path = require('path');
 const User = require('./models/User.js');
+const Post = require('./models/Post.js');
 const PORT = 3000;
 const app = express();
 
@@ -28,30 +29,41 @@ app.use((req, res, next)=> {
 // START ROUTES //
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-// create
-  app.post('/users', async (req, res) => {
-    try{
-        const dbResponse = await User.create(req.body);
-        res.status(201).send(dbResponse);
-    }catch(err){
-        res.status(400).send("Error getting user", err);
-    }
-  })
+//                CREATE 
+
+app.post('/posts/create', async (req, res) => {
+  try{
+    const newPost = req.body;
+    const dbResponse = await Post.create(newPost);
+    res.status(201).send(dbResponse);
+  }catch(err){
+    res.status(500).send("Error adding post to db", err);
+  }
+})
 
 
-  // read
+//                READ
 
-  // read states from DB route
-
-  // update
-
-  // delete
+app.get('/posts/read', async (req, res) => {
+  try{
+    const dbResponse = await Post.find();
+    res.status(200).send(dbResponse);
+  }catch(err){
+    res.status(500).send("Error getting all posts", err);
+  }
+})
 
   /* catch all route */
 
-  app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-  });
+//                UPDATE
+
+//                DELETE
+
+// catch all route
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 // END ROUTES //
 
