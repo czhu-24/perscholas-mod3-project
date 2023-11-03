@@ -28,12 +28,29 @@ app.use((req, res, next) => {
   next();
 })
 
+const verifyToken = (req, res, next) => {
+  const token = req.header('Authorization');
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied no token' });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    req.user = decoded.user;
+    next();
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).send({ message: 'Token expired' });
+    }
+    res.status(400).send({ message: 'Invalid token' });
+  }
+};
+
 // END MIDDLEWARE //
 
 // START ROUTES //
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-//                CREATE 
+//                POST 
 
 
 
@@ -44,7 +61,7 @@ app.post('/signup', async (req, res) => {
     const duplicateCheck = await User.findOne({ username: newUser.username });
 
     if (duplicateCheck) {
-      console.log("There is a duplicate, this is backend");
+      //console.log("There is a duplicate, this is backend");
       res.status(400).send({ message: "Sign up failed due to duplicate username" });
     } else {
 
@@ -69,16 +86,16 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const newUser = req.body;
+  const user = req.body;
   // 1. get the user with this username
-  const dbUser = await User.findOne({ username: newUser.username });
-  // compare
+  const dbUser = await User.findOne({ username: user.username });
   // 2. see if there is a user by the provided username
   if (!dbUser) {
-    return res.status(400).send("username or password incorrect")
+    return res.status(400).send({ message: "no user by that username" })
   };
   // compare hashed version of front end entered pw & db's hashed pw
-  bcrypt.compare(newUser.password, dbUser.password, (err, isMatch) => {
+  bcrypt.compare(user.password, dbUser.password, (err, isMatch) => {
+    console.log(user, dbUser);
     if (isMatch) {
       // let the frontend know that the login was successful!
       // don't want hashed password to be passed to front end
@@ -86,10 +103,8 @@ app.post('/login', async (req, res) => {
       // now just username
       const token = jwt.sign({ dbUser }, process.env.TOKEN_SECRET, { expiresIn: "3h" });
       res.status(200).send({ token, dbUser });
-
-      // log them in ( on frontend can do certain things, get info related to account, can do BACKEND stuff related to their account, permissions for CRUD functionality related to their account, allow only certain users to do certain things )
     } else {
-      res.status(400).send("username or password incorrect")
+      res.status(400).send({ message: "Username or password incorrect" })
     }
   })
 });
@@ -106,7 +121,12 @@ app.post('/posts/create', async (req, res) => {
 })
 
 
-//                READ
+//                GET
+
+app.get('/check_token', verifyToken, async (req, res) => {
+  console.log("CHECKING TOKEN", req.user);
+  res.send(req.user);
+})
 
 app.get('/posts/read', async (req, res) => {
   try {
@@ -127,7 +147,7 @@ app.get('/posts/read', async (req, res) => {
   }
 })
 
-//                UPDATE
+//                PUT
 app.put('/posts/edit/:postId', async (req, res) => {
   try {
     const postId = req.params.postId;

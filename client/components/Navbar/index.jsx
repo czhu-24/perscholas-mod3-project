@@ -1,18 +1,23 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import './index.css'
+import { primaryContext } from '../../context/primaryContext'
 
 const Navbar = () => {
+
+	const { user, setUser, checkedToken, setCheckedToken } = useContext(primaryContext);
+
 	return (
 		<nav>
+			<div>{checkedToken && user.username && `You're logged in!, ${user.username}`}</div>
 			<img src="https://www.adaptivewfs.com/wp-content/uploads/2020/07/logo-placeholder-image.png" alt="placeholder logo" />
 			<Link to="/">Home</Link>
-			<Link to="/messages">Messages</Link>
+			{checkedToken && user.username && <Link to="/messages">Messages</Link>}
 			<Link to="/posts">Posts</Link>
-			<Link to="/profile">Profile</Link>
-			<Link to="/signup">Sign Up</Link>
-			<Link to="/login">Log In</Link>
-			<Link to="/logout">Log Out</Link>
+			{checkedToken && user.username && <Link to="/profile">Profile</Link>}
+			{!checkedToken || !user.username && <Link to="/signup">Sign Up</Link>}
+			{!checkedToken || !user.username && <Link to="/login">Log In</Link>}
+			{checkedToken && user.username && <Link to="/logout">Log Out</Link>}
 		</nav>
 	)
 }

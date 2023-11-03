@@ -1,16 +1,25 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import axios from 'axios'
 import validator from 'validator'
+import { primaryContext } from '../../context/primaryContext'
 
 const Login = () => {
+
+	const { user, setUser } = useContext(primaryContext);
 
 	const [formData, setFormData] = useState({
 		username: "",
 		password: ""
 	})
 
+	const [message, setMessage] = useState(null);
 	const handleForm = async (e) => {
 		e.preventDefault();
+
+		if (!formData.username || !formData.password) {
+			setMessage("Please enter a username and a password");
+			return;
+		}
 
 		// api call
 		try {
@@ -20,9 +29,14 @@ const Login = () => {
 				data: formData
 			});
 			console.log(response.data.token);
-			// put jwt token into local storage TODO
-			//localStorage.setItem("user_token", response.data.token);
+			// put jwt token into local storage 
+			localStorage.setItem("user_token", response.data.token);
+			if (response.data.dbUser) {
+				setUser(response.data.dbUser);
+			}
+			setMessage(response.data.message || "Login successful");
 		} catch (err) {
+			setMessage(err.response?.data?.message);
 			console.error(err.response?.data?.message || 'Error during login.');
 		}
 	}
@@ -49,6 +63,7 @@ const Login = () => {
 
 				</div>
 				<button>Log In</button>
+				<h2>{message}</h2>
 			</form>
 		</div>
 	)

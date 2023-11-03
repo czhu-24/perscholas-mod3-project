@@ -4,8 +4,8 @@ export const primaryContext = createContext();
 
 export const PrimaryProvider = ({ children }) => {
 
-	const [user, setUser] = useState([]);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [user, setUser] = useState({});
+	const [checkedToken, setCheckedToken] = useState(false);
 	const [posts, setPosts] = useState([]);
 	const [editPost, setEditPost] = useState({});
 
@@ -16,7 +16,7 @@ export const PrimaryProvider = ({ children }) => {
 	return (
 		<primaryContext.Provider value={{
 			user, setUser,
-			isLoggedIn, setIsLoggedIn,
+			checkedToken, setCheckedToken,
 			posts, setPosts,
 			editPost, setEditPost
 		}}>
