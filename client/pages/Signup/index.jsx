@@ -56,8 +56,7 @@ const Signup = () => {
 			})
 
 		} catch (err) {
-			// TODO: check if a duplicate username was used & then show error on front end
-			// IF the status code of the response is 400, it'll always go to this catch block
+			// check if a duplicate username was used & then show error on front en			// IF the status code of the response is 400, it'll always go to this catch block
 
 			setMessages(err.response.data.message);
 		}

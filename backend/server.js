@@ -61,7 +61,7 @@ app.post('/signup', async (req, res) => {
     const duplicateCheck = await User.findOne({ username: newUser.username });
 
     if (duplicateCheck) {
-      //console.log("There is a duplicate, this is backend");
+      console.log("There is a duplicate", duplicateCheck);
       res.status(400).send({ message: "Sign up failed due to duplicate username" });
     } else {
 
