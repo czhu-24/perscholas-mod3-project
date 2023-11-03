@@ -38,30 +38,33 @@ app.use(express.static(path.join(__dirname, "../client/dist")));
 
 
 app.post('/signup', async (req, res) => {
+  const newUser = req.body;
   try {
-    const newUser = req.body;
-    // Hashing takes time
-    const hashedPassword = await bcrypt.hash(newUser.password, 10);
+    // send a request for a duplicate user by id, if duplicateCheck exists, then username is taken
+    const duplicateCheck = await User.findOne({ username: newUser.username });
 
-    //console.log(newUser);
-
-    const dbUser = new User({
-      username: newUser.username,
-      password: hashedPassword,
-    });
-
-    await dbUser.save(); // Use await to handle the promise that's created by .save()
-    console.log("user added")
-    res.status(201).send({ message: "User added!" });
-  } catch (err) {
-    if (err.code === 11000) {
-      console.log("error duplicate username")
-      res.status(400).send({ message: "Error: duplicate username" });
-
+    if (duplicateCheck) {
+      console.log("There is a duplicate, this is backend");
+      res.status(400).send({ message: "Sign up failed due to duplicate username" });
     } else {
-      console.log("sometign else")
-      res.status(400).send({ message: `Other error:  + ${err.message}` };
+
+      // Hashing takes time
+      const hashedPassword = await bcrypt.hash(newUser.password, 10);
+
+      //console.log(newUser);
+
+      const dbUser = new User({
+        username: newUser.username,
+        password: hashedPassword,
+      });
+
+      await dbUser.save(); // Use await to handle the promise that's created by .save()
+      console.log("user added")
+      res.status(201).send({ message: "User added!" });
     }
+
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 
