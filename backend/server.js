@@ -12,6 +12,8 @@ const app = express();
 
 const User = require('./models/User.js');
 const Post = require('./models/Post.js');
+const Message = require('./models/Message.js');
+const UserMessage = require('./models/userMessage.js');
 
 // START MIDDLEWARE //
 app.use(express.json());
@@ -35,6 +37,7 @@ const verifyToken = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    console.log(decoded);
     req.user = decoded.user;
     next();
   } catch (error) {
@@ -61,7 +64,7 @@ app.post('/signup', async (req, res) => {
     const duplicateCheck = await User.findOne({ username: newUser.username });
 
     if (duplicateCheck) {
-      console.log("There is a duplicate", duplicateCheck);
+      //console.log("There is a duplicate", duplicateCheck);
       res.status(400).send({ message: "Sign up failed due to duplicate username" });
     } else {
 
@@ -95,13 +98,13 @@ app.post('/login', async (req, res) => {
   };
   // compare hashed version of front end entered pw & db's hashed pw
   bcrypt.compare(user.password, dbUser.password, (err, isMatch) => {
-    console.log(user, dbUser);
+    //console.log(user, dbUser);
     if (isMatch) {
       // let the frontend know that the login was successful!
       // don't want hashed password to be passed to front end
       dbUser.password = "";
       // now just username
-      const token = jwt.sign({ dbUser }, process.env.TOKEN_SECRET, { expiresIn: "3h" });
+      const token = jwt.sign({ user: dbUser }, process.env.TOKEN_SECRET, { expiresIn: "3h" });
       res.status(200).send({ token, dbUser });
     } else {
       res.status(400).send({ message: "Username or password incorrect" })
@@ -119,6 +122,30 @@ app.post('/posts/create', async (req, res) => {
     res.status(500).send("Error adding post to db", err);
   }
 })
+
+app.post('/messages/create', verifyToken, async (req, res) => {
+  try {
+    const receiverUsername = req.body.username;
+    const message = req.body.content;
+
+    const dbUser = await User.findOne({ username: receiverUsername });
+    if (dbUser) {
+      console.log(`LOOK HERE`, req.user, message);
+      const dbResponse = await Message.create({ content: message });
+
+      await UserMessage.create({
+        sender: req.user._id,
+        receiver: dbUser._id,
+        message: dbResponse._id
+      })
+      res.status(201).send(dbResponse);
+    } else {
+      res.status(404).send({ message: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).send({ message: `error sending this msg, ${err}` });
+  }
+});
 
 
 //                GET

@@ -32,7 +32,7 @@ const Posts = () => {
 				data: formData
 			});
 
-			console.log(response);
+			//console.log(response);
 
 			setFormData({
 				content: "",
