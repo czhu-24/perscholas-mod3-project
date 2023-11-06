@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require("mongoose");
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet'); // adds a bunch of standard security to server
@@ -37,7 +38,7 @@ const verifyToken = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-    console.log(decoded);
+    //console.log(decoded);
     req.user = decoded.user;
     next();
   } catch (error) {
@@ -130,7 +131,7 @@ app.post('/messages/create', verifyToken, async (req, res) => {
 
     const dbUser = await User.findOne({ username: receiverUsername });
     if (dbUser) {
-      console.log(`LOOK HERE`, req.user, message);
+      //console.log(`LOOK HERE`, req.user, message);
       const dbResponse = await Message.create({ content: message });
 
       await UserMessage.create({
@@ -151,7 +152,7 @@ app.post('/messages/create', verifyToken, async (req, res) => {
 //                GET
 
 app.get('/check_token', verifyToken, async (req, res) => {
-  console.log("CHECKING TOKEN", req.user);
+  //console.log("CHECKING TOKEN", req.user);
   res.send(req.user);
 })
 
@@ -171,6 +172,27 @@ app.get('/posts/read', async (req, res) => {
     res.status(200).send(changedDbResponse);
   } catch (err) {
     res.status(500).send("Error getting all posts", err);
+  }
+})
+
+app.get('/messages/read', verifyToken, async (req, res) => {
+  const receiverId = new mongoose.Types.ObjectId(req.user._id);
+
+  // const dbResponse = await UserMessage.find({ receiver: receiverId }).populate({
+  //   path: 'message', // outer populate populates message field with data from Message collection
+  //   populate: { // populates sender reference with data from User collection
+  //     path: 'sender',
+  //     model: 'User', // necessary because this is a nested populate
+  //   },
+  // });
+  try{
+    const dbResponse = await UserMessage.find({ receiver: receiverId }).populate({
+        path: 'message', // outer populate populates message field with data from Message collection
+      });
+    console.log(dbResponse);
+    res.send(dbResponse);
+  }catch(error){
+    res.status(500).send("Something went wrong with find the usermessages");
   }
 })
 

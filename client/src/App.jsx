@@ -29,7 +29,7 @@ function App() {
         }
       }).then((res) => {
         setCheckedToken(true);
-        console.log(res);
+        //console.log(res);
         if (res.status === 200 && res.data) {
           setUser(res.data);
         }

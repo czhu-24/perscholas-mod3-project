@@ -4,10 +4,14 @@ import validator from 'validator'
 
 const Posts = () => {
 
+	// where we CREATE posts
+
 	const [formData, setFormData] = useState({
 		content: "",
 		isPublic: true
 	});
+
+	const [message, setMessage] = useState("");
 
 	const [formError, setFormError] = useState("");
 
@@ -39,6 +43,8 @@ const Posts = () => {
 				isPublic: true
 			})
 
+			setMessage("post submitted successfully!");
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -62,6 +68,7 @@ const Posts = () => {
 				</div>
 
 				<button type="submit">Submit post</button>
+				<div>{message}</div>
 			</form>
 		</div>
 	)

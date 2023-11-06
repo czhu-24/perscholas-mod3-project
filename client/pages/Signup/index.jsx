@@ -85,7 +85,7 @@ const Signup = () => {
 					<br />
 					{errors.password && <span>{errors.password}</span>}
 				</div>
-				<button>Log In</button>
+				<button>Sign up</button>
 			</form>
 			<h2>{messages ? messages : ""}</h2>
 		</div>

@@ -1,5 +1,7 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import Message from '../../components/Message';
+import { primaryContext } from '../../context/primaryContext';
 
 const Messages = () => {
 
@@ -9,6 +11,24 @@ const Messages = () => {
 	});
 
 	const [message, setMessage] = useState("");
+
+	const [receivedMessages, setReceivedMessages] = useState([]);
+
+	useEffect(() => {
+		const token = localStorage.getItem("user_token");
+
+		axios({
+			method: "GET",
+			url: '/server/messages/read',
+			headers: {
+				Authorization: token
+			}
+		}).then((response) => {
+			console.log(response);
+			setReceivedMessages(response.data)
+		})
+			.catch(err => console.error("Error getting messages data", err));
+	}, []);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -57,7 +77,11 @@ const Messages = () => {
 			</form>
 			<h2>{message}</h2>
 
-			<h3>Display messages to user below</h3>
+			<h3>Messages to user</h3>
+			{receivedMessages.map((message) => {
+				return <Message message={message} />
+			})}
+
 		</div>
 	)
 }
