@@ -11,7 +11,6 @@ const Navbar = () => {
 	return (
 		<nav>
 			<div>{(checkedToken && user.username) && `You're logged in, ${user.username}`}</div>
-			<img src="https://www.adaptivewfs.com/wp-content/uploads/2020/07/logo-placeholder-image.png" alt="placeholder logo" />
 			<Link to="/">Home</Link>
 			{checkedToken && user.username && <Link to="/messages">Messages</Link>}
 			<Link to="/posts">Posts</Link>

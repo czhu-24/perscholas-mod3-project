@@ -19,7 +19,6 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("user_token");
-    console.log("use effect inside App.jsx is running!");
     // verify token with server
     if (token) {
       axios({
