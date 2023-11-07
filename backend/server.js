@@ -33,6 +33,14 @@ app.use((req, res, next) => {
   next();
 })
 
+// Serve static files from the 'dist' folder
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+app.use(express.static(distPath));
+
+// middleware
+
 const verifyToken = async (req, res, next) => {
   const token = req.header('Authorization');
   try {
@@ -55,12 +63,10 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-// TODO: middleware to verify if user is logged in or not
-
 // END MIDDLEWARE //
 
 // START ROUTES //
-app.use(express.static(path.join(__dirname, "../client/dist")));
+
 
 //                POST 
 
