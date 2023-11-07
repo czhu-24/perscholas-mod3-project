@@ -42,4 +42,4 @@ Either:
 - Add just-for-features like the ability to send an animation of crabs scurrying across the screen to another user and different themes for holidays
 - Add API integration for chatbot interaction
 
-### Link to demo:
+### Link to demo: https://mod-3-gg1y.onrender.com
