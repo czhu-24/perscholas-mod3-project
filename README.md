@@ -30,6 +30,7 @@ Either:
 - Access the app hosted on render (see link below)
 
 ### Unsolved Problems
+- Could not get the image asset to display correctly on Render, probably something to do with the path
 - Cannot currently display formattedCreatedAt date for messages
 - Deletion and editing of posts only refreshes on front end after page refresh
 

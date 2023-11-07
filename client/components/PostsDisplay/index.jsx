@@ -53,7 +53,7 @@ const PostsDisplay = () => {
 	// to handle the react-select element
 	const handleOptionChange = (selectedOption) => {
 		console.log(selectedOption.value);
-		setSelectedValue(selectOption);
+		setSelectedValue(selectedOption);
 
 		// TODO... what about first render... nah, it should be fine
 		const postsCopy = [...posts];
