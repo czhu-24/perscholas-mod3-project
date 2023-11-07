@@ -14,7 +14,7 @@ const app = express();
 const User = require('./models/User.js');
 const Post = require('./models/Post.js');
 const Message = require('./models/Message.js');
-const UserMessage = require('./models/userMessage.js');
+const UserMessage = require('./models/UserMessage.js');
 
 const ANONYMOUS = process.env.ANONYMOUS;
 
