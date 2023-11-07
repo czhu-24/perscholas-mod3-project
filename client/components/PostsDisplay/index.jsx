@@ -5,9 +5,10 @@ import './index.css'
 import Post from '../Post'
 import ReactModal from 'react-modal';
 import validator from 'validator'
+import Select from 'react-select'
 
 const PostsDisplay = () => {
-	const { posts, setPosts, editPost, setEditPost } = useContext(primaryContext);
+	const { user, posts, setPosts, editPost, setEditPost } = useContext(primaryContext);
 
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 	const [deleteId, setDeleteId] = useState(null);
@@ -15,20 +16,33 @@ const PostsDisplay = () => {
 	const [isEditModalOpen, setEditModalOpen] = useState(false);
 	const [formData, setFormData] = useState({
 		content: editPost.content,
-		isPublic: editPost.isPublic
+		isPublic: editPost.isPublic,
+		isAnonymous: editPost.isAnonymous
 	});
+
+	const options = [
+		{ value: 'All', label: 'All' },
+		{ value: 'Anonymous', label: 'Anonymous' },
+		{ value: 'My Posts', label: 'My Posts' }
+	]
+
+	// for accessibility reasons for ReactModal
+	ReactModal.setAppElement('#root');
 
 	// change edit form everytime the edit button is clicked on
 	useEffect(() => {
 		setFormData({
 			content: editPost.content,
-			isPublic: editPost.isPublic
+			isPublic: editPost.isPublic,
+			isAnonymous: editPost.isAnonymous
 		})
 	}, [editPost]) // not 100% sure why it needs to be dependent on editPost and i can't use the empty dependency array
 
+	// to handle the react-select element
+	const handleOptionChange = (selectedOption) => {
 
-	// for accessibility reasons for ReactModal
-	ReactModal.setAppElement('#root');
+	};
+
 
 	// functions to handle edit and delete calls
 	const handleDelete = async (postId) => {
@@ -117,6 +131,11 @@ const PostsDisplay = () => {
 						<input onChange={() => setFormData((prevState) => ({ ...prevState, isPublic: !formData.isPublic }))} type="checkbox" id="isPublic" name="isPublic" defaultChecked={formData.isPublic} />
 					</div>
 
+					<div>
+						<label htmlFor="isAnonymous">Anonymous Post?</label>
+						<input onChange={() => setFormData((prevState) => ({ ...prevState, isAnonymous: !formData.isAnonymous }))} type="checkbox" id="isAnonymous" name="isAnonymous" defaultChecked={formData.isAnonymous} />
+					</div>
+
 					<button>Save Edit</button>
 					<button onClick={() => setEditModalOpen(false)}>No, Go Back</button>
 				</form>
@@ -127,6 +146,7 @@ const PostsDisplay = () => {
 			</ReactModal>
 
 			<ul className="list-grid-parent">
+				{user && <Select options={options} onChange={handleOptionChange} />}
 				{posts.map((post) =>
 					<div key={JSON.stringify(post)} className="list-grid">
 						<img src="../src/assets/profile.png" alt="profile" />

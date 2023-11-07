@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose; 
 
 const postSchema = new mongoose.Schema({
-	author: {type: Schema.Types.ObjectId, ref: 'User'},
+	  author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     content: {type: String, required: true},
-    isPublic: {type: Boolean, required: true}
+    isPublic: {type: Boolean, required: true},
+    isAnonymous: {type: Boolean, required: true}
 },
 {
     timestamps: true

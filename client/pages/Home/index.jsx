@@ -9,13 +9,17 @@ const Home = () => {
 
 	// handles context
 	useEffect(() => {
+		const token = localStorage.getItem("user_token");
 		// fill the posts within Context
 		try {
 			axios({
 				method: "GET",
-				url: "/server/posts/read"
+				url: "/server/posts/read",
+				headers: {
+					Authorization: token
+				}
 			}).then((response) => {
-				//console.log(response.data);
+				console.log(response.data);
 				setPosts(response.data);
 			})
 		} catch (err) {

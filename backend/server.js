@@ -16,6 +16,8 @@ const Post = require('./models/Post.js');
 const Message = require('./models/Message.js');
 const UserMessage = require('./models/userMessage.js');
 
+const ANONYMOUS = "654970d3bebb38e5b733d7d4";
+
 // START MIDDLEWARE //
 app.use(express.json());
 app.use(cors({
@@ -31,23 +33,29 @@ app.use((req, res, next) => {
   next();
 })
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   const token = req.header('Authorization');
-  if (!token) {
-    return res.status(401).json({ message: 'Access denied no token' });
-  }
   try {
-    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-    //console.log(decoded);
-    req.user = decoded.user;
-    next();
+    if (!token) {
+      // Hokey not great soln for now
+      // TODO, change later, maybe middleware...?
+      req.user = await User.findById(ANONYMOUS);
+      next(); 
+    }else{
+      const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+      //console.log(decoded);
+      req.user = decoded.user;
+      next();
+    }
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).send({ message: 'Token expired' });
     }
-    res.status(400).send({ message: 'Invalid token' });
+    res.status(400).send(error);
   }
 };
+
+// TODO: middleware to verify if user is logged in or not
 
 // END MIDDLEWARE //
 
@@ -117,10 +125,17 @@ app.post('/login', async (req, res) => {
 app.post('/posts/create', async (req, res) => {
   try {
     const newPost = req.body;
+    // if there's no posterId, for when you're not logged in, then give it the anonymous account's id
+    if(!newPost.author){
+      newPost.author = new mongoose.Types.ObjectId("654970d3bebb38e5b733d7d4");
+    }
+
+    console.log(newPost);
+
     const dbResponse = await Post.create(newPost);
     res.status(201).send(dbResponse);
   } catch (err) {
-    res.status(500).send("Error adding post to db", err);
+    res.status(500).send(err);
   }
 })
 
@@ -156,39 +171,55 @@ app.get('/check_token', verifyToken, async (req, res) => {
   res.send(req.user);
 })
 
-app.get('/posts/read', async (req, res) => {
+app.get('/posts/read', verifyToken, async (req, res) => {
+  console.log(req.user);
   try {
-    const dbResponse = await Post.find();
-    const changedDbResponse = dbResponse.map((post) => ({
+    // check that req.user isn't anonymous (and not logged in)
+    if(req.user._id != ANONYMOUS){
+      console.log("logged in");
+      const dbResponse = await Post.find().populate({
+        path: "author", 
+        select: "-password" // this field's now excluded
+      });
+      const changedDbResponse = dbResponse.map((post) => ({
       _id: post._id,
-      // author is not required
-      author: post.author || "Anonymous",
+      author: post.author,
       content: post.content,
       isPublic: post.isPublic,
+      isAnonymous: post.isAnonymous,
       // Access the virtual property
       formattedCreatedAt: post.formattedCreatedAt,
     }));
-
     res.status(200).send(changedDbResponse);
-  } catch (err) {
+    }else{
+      console.log("logged out");
+      const dbResponse = await Post.find({isPublic: true}).populate({
+        path: "author", 
+        select: "-password" // this field's now excluded
+      });
+      const changedDbResponse = dbResponse.map((post) => ({
+      _id: post._id,
+      author: post.author,
+      content: post.content,
+      isPublic: post.isPublic,
+      isAnonymous: post.isAnonymous,
+      // Access the virtual property
+      formattedCreatedAt: post.formattedCreatedAt,
+    }));
+    console.log(changedDbResponse);
+    }
+    
+    } catch (err) {
     res.status(500).send("Error getting all posts", err);
   }
 })
 
 app.get('/messages/read', verifyToken, async (req, res) => {
   const receiverId = new mongoose.Types.ObjectId(req.user._id);
-
-  // const dbResponse = await UserMessage.find({ receiver: receiverId }).populate({
-  //   path: 'message', // outer populate populates message field with data from Message collection
-  //   populate: { // populates sender reference with data from User collection
-  //     path: 'sender',
-  //     model: 'User', // necessary because this is a nested populate
-  //   },
-  // });
   try{
     const dbResponse = await UserMessage.find({ receiver: receiverId }).populate({
-        path: 'message', // outer populate populates message field with data from Message collection
-      });
+        path: 'message', // populates message field with data from Message collection
+      }).populate({path: 'sender'}); 
     console.log(dbResponse);
     res.send(dbResponse);
   }catch(error){

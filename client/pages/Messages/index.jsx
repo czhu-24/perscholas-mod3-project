@@ -1,7 +1,6 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Message from '../../components/Message';
-import { primaryContext } from '../../context/primaryContext';
 
 const Messages = () => {
 
@@ -10,7 +9,7 @@ const Messages = () => {
 		content: ""
 	});
 
-	const [message, setMessage] = useState("");
+	const [submitMessage, setSubmitMessage] = useState("");
 
 	const [receivedMessages, setReceivedMessages] = useState([]);
 
@@ -24,8 +23,8 @@ const Messages = () => {
 				Authorization: token
 			}
 		}).then((response) => {
-			console.log(response);
-			setReceivedMessages(response.data)
+			// console.log(response);
+			setReceivedMessages(response.data);
 		})
 			.catch(err => console.error("Error getting messages data", err));
 	}, []);
@@ -44,7 +43,7 @@ const Messages = () => {
 		const token = localStorage.getItem("user_token");
 
 		if (!formData.username || !formData.content) {
-			setMessage("Please enter a username and a message")
+			setSubmitMessage("Please enter a username and a message")
 			return;
 		}
 
@@ -58,12 +57,12 @@ const Messages = () => {
 				data: formData
 			});
 
-			setMessage(response.data.message || "Message sent successfully!");
+			setSubmitMessage(response.data.message || "Message sent successfully!");
 		} catch (err) {
 			// user tried to send message to another username which is invalid
 			// user tried to send message but the token has expired between them entering this page & sending the message
 
-			setMessage(err.response.data.message);
+			setSubmitMessage(err.response.data.message);
 		}
 	}
 	return (
@@ -75,11 +74,11 @@ const Messages = () => {
 				<label htmlFor="content">Message: </label><input type="text" onChange={(e) => handleChange(e)} name="content" id="content" value={formData.content} />
 				<button>Send message!</button>
 			</form>
-			<h2>{message}</h2>
+			<h2>{submitMessage}</h2>
 
 			<h3>Messages to user</h3>
 			{receivedMessages.map((message) => {
-				return <Message message={message} />
+				return <Message key={message._id} messageObj={message} />
 			})}
 
 		</div>
