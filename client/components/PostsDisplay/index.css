@@ -37,15 +37,17 @@
 
 /*		responsive styling for mobile screens 		*/
 @media screen and (max-width: 768px) {
+
 	.list-grid {
-		grid-template-rows: repeat(6, 1fr) !important;
+		grid-template-rows: 1fr 1fr 1fr 1fr 10vh 10vh !important;
 		grid-template-columns: repeat(3, 1fr) !important;
+		gap: 3vw;
 	}
 
 	.list-grid img {
-		grid-row: span 1 / 1;
-		grid-column: span 1 / 1;
-		max-width: 100px;
+		grid-row: 1 / 1;
+		grid-column: 1 / 1;
+		max-width: 20vw;
 		/* Shrink the image width to fit the container */
 		height: auto;
 		/* Maintain the image's aspect ratio */
@@ -53,8 +55,8 @@
 
 	.list-grid .post {
 		/* span 3 rows and start on 2nd row */
-		grid-row: span 3 / 2;
-		grid-column: span 3 / 1;
+		grid-row: 2 / span 3;
+		grid-column: 1 / span 3;
 	}
 
 	.list-grid button {
@@ -62,13 +64,13 @@
 	}
 
 	.list-grid .delete-btn {
-		grid-row: span 1 / 5;
-		grid-column: span 3;
+		grid-row: 5 / span 1;
+		grid-column: 1 / span 3;
 	}
 
 	.list-grid .edit-btn {
-		grid-row: span 1 / 6;
-		grid-column: span 3;
+		grid-row: 6 / span 1;
+		grid-column: 1 / span 3;
 	}
 }
 

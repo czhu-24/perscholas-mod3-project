@@ -130,7 +130,7 @@ app.post('/posts/create', async (req, res) => {
       newPost.author = new mongoose.Types.ObjectId("654970d3bebb38e5b733d7d4");
     }
 
-    console.log(newPost);
+    //console.log(newPost);
 
     const dbResponse = await Post.create(newPost);
     res.status(201).send(dbResponse);
@@ -177,7 +177,13 @@ app.get('/posts/read', verifyToken, async (req, res) => {
     // check that req.user isn't anonymous (and not logged in)
     if(req.user._id != ANONYMOUS){
       console.log("logged in");
-      const dbResponse = await Post.find().populate({
+      // we want all posts that either have isPublic as true OR have isPublic as false and the author._id matches that of logged in user
+      const dbResponse = await Post.find({
+        $or: [
+          { isPublic: true },
+          { isPublic: false, 'author._id': req.user._id}
+        ]
+      }).populate({
         path: "author", 
         select: "-password" // this field's now excluded
       });
@@ -206,7 +212,8 @@ app.get('/posts/read', verifyToken, async (req, res) => {
       // Access the virtual property
       formattedCreatedAt: post.formattedCreatedAt,
     }));
-    console.log(changedDbResponse);
+    //console.log(changedDbResponse);
+    res.status(200).send(changedDbResponse);
     }
     
     } catch (err) {

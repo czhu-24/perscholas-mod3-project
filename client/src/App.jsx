@@ -15,10 +15,11 @@ import axios from 'axios'
 
 function App() {
 
-  const { user, setUser, checkedToken, setCheckedToken } = useContext(primaryContext);
+  const { setUser, setCheckedToken } = useContext(primaryContext);
 
   useEffect(() => {
     const token = localStorage.getItem("user_token");
+    console.log("use effect inside App.jsx is running!");
     // verify token with server
     if (token) {
       axios({
@@ -38,7 +39,8 @@ function App() {
         console.error("Something's wrong with the token", err);
       })
     } else {
-      setCheckedToken(true);
+      // there's no token
+      setCheckedToken(false);
     }
   }, [])
 

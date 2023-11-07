@@ -19,6 +19,9 @@ const PostsDisplay = () => {
 		isPublic: editPost.isPublic,
 		isAnonymous: editPost.isAnonymous
 	});
+	const [filteredPosts, setFilteredPosts] = useState([]);
+
+	console.log(filteredPosts);
 
 	const options = [
 		{ value: 'All', label: 'All' },
@@ -38,9 +41,29 @@ const PostsDisplay = () => {
 		})
 	}, [editPost]) // not 100% sure why it needs to be dependent on editPost and i can't use the empty dependency array
 
+	useEffect(() => {
+		setFilteredPosts([...posts]);
+	}, [posts]);
+
 	// to handle the react-select element
 	const handleOptionChange = (selectedOption) => {
+		console.log(selectedOption.value);
 
+		// TODO... what about first render... nah, it should be fine
+		const postsCopy = [...posts];
+		switch (selectedOption.value) {
+			case "All":
+				setFilteredPosts([...posts]);
+				break;
+			case "Anonymous":
+				const filteredAnon = postsCopy.filter((post) => post.isAnonymous);
+				setFilteredPosts(filteredAnon);
+				break;
+			case "My Posts":
+				const filteredByUser = postsCopy.filter((post) => post.author._id === user._id);
+				setFilteredPosts(filteredByUser);
+				break;
+		}
 	};
 
 
@@ -145,9 +168,20 @@ const PostsDisplay = () => {
 				</div>
 			</ReactModal>
 
-			<ul className="list-grid-parent">
-				{user && <Select options={options} onChange={handleOptionChange} />}
-				{posts.map((post) =>
+			<div className="list-grid-parent">
+				{user._id && <Select options={options} defaultValue={options[0]} onChange={handleOptionChange}
+					styles={{
+						input: (baseStyles) => ({
+							...baseStyles,
+							width: '25vw',
+						}),
+						control: (baseStyles) => ({
+							...baseStyles,
+							width: '25vw',
+						}),
+					}}
+				/>}
+				{filteredPosts.map((post) =>
 					<div key={JSON.stringify(post)} className="list-grid">
 						<img src="../src/assets/profile.png" alt="profile" />
 						<div key={post._id} className="post">
@@ -163,7 +197,7 @@ const PostsDisplay = () => {
 						}} className="delete-btn">Delete</button>
 					</div>
 				)}
-			</ul>
+			</div>
 		</div>
 
 	)

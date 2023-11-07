@@ -5,9 +5,10 @@ import axios from 'axios'
 
 const Home = () => {
 
-	const { posts, setPosts } = useContext(primaryContext);
+	const { user, checkedToken, posts, setPosts } = useContext(primaryContext);
 
 	// handles context
+	// the contents of posts should change when user and checkedToken changes
 	useEffect(() => {
 		const token = localStorage.getItem("user_token");
 		// fill the posts within Context
@@ -25,7 +26,7 @@ const Home = () => {
 		} catch (err) {
 			console.error(err);
 		}
-	}, []);
+	}, [user, checkedToken]);
 
 	return (
 		<>

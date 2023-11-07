@@ -18,8 +18,6 @@ const Posts = () => {
 
 	const [message, setMessage] = useState("");
 
-	const [formError, setFormError] = useState("");
-
 	useEffect(() => {
 		// handle author, id of the user that's the author, of the formData when loggedIn
 		if (user && checkedToken) {

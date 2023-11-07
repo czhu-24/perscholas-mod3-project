@@ -5,7 +5,7 @@ import { primaryContext } from '../../context/primaryContext'
 
 const Login = () => {
 
-	const { user, setUser } = useContext(primaryContext);
+	const { user, setUser, setCheckedToken } = useContext(primaryContext);
 
 	const [formData, setFormData] = useState({
 		username: "",
@@ -33,6 +33,7 @@ const Login = () => {
 			localStorage.setItem("user_token", response.data.token);
 			if (response.data.dbUser) {
 				setUser(response.data.dbUser);
+				setCheckedToken(true);
 			}
 			setMessage(response.data.message || "Login successful");
 		} catch (err) {
