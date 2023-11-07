@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 
 // Serve static files from the 'dist' folder
 
-app.use(express.static(path.join(__dirname, "../client/dist")));
+const distPath = path.join(__dirname, "../client/dist");
 
 app.use(express.static(distPath));
 
