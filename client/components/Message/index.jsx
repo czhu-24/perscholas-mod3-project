@@ -1,4 +1,5 @@
 import React from 'react'
+import './index.css'
 
 const Message = ({ messageObj }) => {
 
@@ -6,11 +7,10 @@ const Message = ({ messageObj }) => {
 	// has message.content & message.createdAt, sender (which is... id still sigh)
 	// TODO: styling
 	return (
-		<div>
+		<div className="message">
 			<li>{messageObj.message.createdAt}</li>
 			<li>{messageObj.message.content}</li>
 			<li>Sent by: {messageObj.sender.username}</li>
-			<br />
 		</div>
 	)
 }

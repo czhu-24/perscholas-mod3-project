@@ -16,7 +16,7 @@ const Post = require('./models/Post.js');
 const Message = require('./models/Message.js');
 const UserMessage = require('./models/userMessage.js');
 
-const ANONYMOUS = "654970d3bebb38e5b733d7d4";
+const ANONYMOUS = process.env.ANONYMOUS;
 
 // START MIDDLEWARE //
 app.use(express.json());
@@ -88,7 +88,7 @@ app.post('/signup', async (req, res) => {
       });
 
       await dbUser.save(); // Use await to handle the promise that's created by .save()
-      console.log("user added")
+      //console.log("user added")
       res.status(201).send({ message: "User added!" });
     }
 
@@ -127,7 +127,7 @@ app.post('/posts/create', async (req, res) => {
     const newPost = req.body;
     // if there's no posterId, for when you're not logged in, then give it the anonymous account's id
     if(!newPost.author){
-      newPost.author = new mongoose.Types.ObjectId("654970d3bebb38e5b733d7d4");
+      newPost.author = new mongoose.Types.ObjectId(ANONYMOUS);
     }
 
     //console.log(newPost);
@@ -172,22 +172,25 @@ app.get('/check_token', verifyToken, async (req, res) => {
 })
 
 app.get('/posts/read', verifyToken, async (req, res) => {
-  console.log(req.user);
+  //console.log(req.user._id);
   try {
     // check that req.user isn't anonymous (and not logged in)
     if(req.user._id != ANONYMOUS){
-      console.log("logged in");
-      // we want all posts that either have isPublic as true OR have isPublic as false and the author._id matches that of logged in user
-      const dbResponse = await Post.find({
-        $or: [
-          { isPublic: true },
-          { isPublic: false, 'author._id': req.user._id}
-        ]
-      }).populate({
-        path: "author", 
-        select: "-password" // this field's now excluded
+      //console.log("logged in");
+
+      // first populate every post with the data from the User collection for author
+      const postsWithAuthors = await Post.find({}).populate(
+        {
+          path: 'author', 
+          select: "-password" // this field's now excluded
       });
-      const changedDbResponse = dbResponse.map((post) => ({
+      // Now, I can access the author._id part of each Post
+      const filteredPosts = postsWithAuthors.filter(post => {
+        // Check your conditions here, including post.author._id
+        return (post.isPublic === true || 
+          (post.isPublic === false && post.author._id == req.user._id));
+      });
+      const changedDbResponse = filteredPosts.map((post) => ({
       _id: post._id,
       author: post.author,
       content: post.content,
@@ -198,7 +201,7 @@ app.get('/posts/read', verifyToken, async (req, res) => {
     }));
     res.status(200).send(changedDbResponse);
     }else{
-      console.log("logged out");
+      //console.log("logged out");
       const dbResponse = await Post.find({isPublic: true}).populate({
         path: "author", 
         select: "-password" // this field's now excluded
@@ -227,7 +230,7 @@ app.get('/messages/read', verifyToken, async (req, res) => {
     const dbResponse = await UserMessage.find({ receiver: receiverId }).populate({
         path: 'message', // populates message field with data from Message collection
       }).populate({path: 'sender'}); 
-    console.log(dbResponse);
+    //console.log(dbResponse);
     res.send(dbResponse);
   }catch(error){
     res.status(500).send("Something went wrong with find the usermessages");

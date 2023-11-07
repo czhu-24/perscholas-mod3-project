@@ -21,13 +21,15 @@ const PostsDisplay = () => {
 	});
 	const [filteredPosts, setFilteredPosts] = useState([]);
 
-	console.log(filteredPosts);
+	// console.log(filteredPosts);
 
 	const options = [
 		{ value: 'All', label: 'All' },
 		{ value: 'Anonymous', label: 'Anonymous' },
 		{ value: 'My Posts', label: 'My Posts' }
 	]
+
+	const [selectedValue, setSelectedValue] = useState(options[0]);
 
 	// for accessibility reasons for ReactModal
 	ReactModal.setAppElement('#root');
@@ -48,6 +50,7 @@ const PostsDisplay = () => {
 	// to handle the react-select element
 	const handleOptionChange = (selectedOption) => {
 		console.log(selectedOption.value);
+		setSelectedValue(selectOption);
 
 		// TODO... what about first render... nah, it should be fine
 		const postsCopy = [...posts];

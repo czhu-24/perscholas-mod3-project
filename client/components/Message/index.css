@@ -1,0 +1,33 @@
+/* List styling */
+.message {
+	list-style: none;
+	/* Remove default list bullets */
+	padding: 0;
+
+	margin: 10px 0;
+	/* Spacing between list items */
+	padding: 10px;
+	/* Padding for a comfortable feel */
+	background-color: #ffeecc;
+	/* Soft, warm background color */
+	border: 1px solid #ffcc99;
+	/* Subtle border */
+	border-radius: 5px;
+	/* Rounded corners for each item */
+	box-shadow: 3px 3px 5px #ccc;
+	/* A subtle box shadow for depth */
+
+	/* Text styling */
+	font-size: 18px;
+	/* Larger text for readability */
+	color: #333;
+	/* Dark text color */
+	text-align: center;
+
+	width: 70vw;
+}
+
+/* Hover effect */
+.message:hover {
+	background-color: #ffcc99;
+}
