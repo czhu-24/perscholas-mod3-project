@@ -6,10 +6,10 @@ import Post from '../Post'
 import ReactModal from 'react-modal';
 import validator from 'validator'
 import Select from 'react-select'
-import path from 'path';
+//import path from 'path';
 
 const PostsDisplay = () => {
-	const distPath = path.join(__dirname, "../client/src/assets");
+	//const distPath = path.join(__dirname, "../client/src/assets");
 
 	const { user, posts, setPosts, editPost, setEditPost } = useContext(primaryContext);
 
@@ -189,7 +189,7 @@ const PostsDisplay = () => {
 				/>}
 				{filteredPosts.map((post) =>
 					<div key={JSON.stringify(post)} className="list-grid">
-						<img src={`${distPath}/profile.png`} alt="profile" />
+						<img src=".\client\src\assets\profile.png" alt="profile" />
 						<div key={post._id} className="post">
 							<Post post={post} />
 						</div>
